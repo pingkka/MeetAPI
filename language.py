@@ -4,6 +4,8 @@ import emotion_model
 
 Language = Namespace('Language')
 
+emotion = emotion_model.textClassification()
+
 
 @Language.route('/get-emotion')
 class LanguagePost(Resource):
@@ -11,7 +13,6 @@ class LanguagePost(Resource):
         try:
             text = request.files['file'].read().decode('utf-8')
             print(text)
-            emotion = emotion_model.textClassification()
             return {'emotion': emotion.textClassification(text)}
 
         except Exception as e:
