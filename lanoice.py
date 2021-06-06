@@ -1,3 +1,4 @@
+# -*- coding:utf-8 -*-
 import os
 import wave
 
@@ -6,16 +7,28 @@ from flask_restx import Resource, Namespace
 from werkzeug.utils import secure_filename
 
 import lanoice_model
+import usage_info
+import datetime
+import pytz
+
+global usage_info_list
 
 Lanoice = Namespace('Lanoice')
 
 lanoice = lanoice_model.LanoiceClassification()
 
+usage_info_list = list()
+
 
 @Lanoice.route('/get-emotion')
 class LanguageVoicePost(Resource):
     def post(self):
+        info = usage_info.UsageInfo()
+        now = datetime.datetime.now(pytz.timezone('Asia/Seoul'))
+        info.ip = request.remote_addr
+        info.time = now
         try:
+
             text = request.files['text_file'].read().decode('utf-8')
             print(text)
 
@@ -27,11 +40,21 @@ class LanguageVoicePost(Resource):
 
             emotion = lanoice.classify(wav_filename, text)
 
+            info.text = text
+            info.emotion = emotion
+
+            usage_info_list.append(info)
+
             remove_file(pcm_file.filename)
             remove_file(wav_filename)
+
             return {'emotion': emotion}
 
         except Exception as e:
+            info.text = str(e)
+            info.emotion = "error"
+
+            usage_info_list.append(info)
             return {'error': str(e)}
 
 

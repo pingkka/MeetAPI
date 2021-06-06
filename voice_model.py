@@ -10,7 +10,7 @@ class audioClassification():
         self.emotions = ["none", "joy", "annoy", "sad", "disgust", "surprise", "fear"]
 
         # 파일명
-        self.filename = 'xgb_model_t.model'
+        self.filename = 'xgb_model.model'
 
         # 모델 불러오기
         self.loaded_model = pickle.load(open(self.filename, 'rb'))

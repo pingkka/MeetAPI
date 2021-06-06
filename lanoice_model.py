@@ -28,7 +28,7 @@ class LanoiceClassification():
         self.device = torch.device("cpu")
 
         # 텍스트 모델 불러오기
-        self.model = hw_text_model.HwangariSentimentModel.from_pretrained("Kyuyoung11/haremotions-v1").to(self.device)
+        self.model = hw_text_model.HwangariSentimentModel.from_pretrained("Kyuyoung11/haremotions-v2").to(self.device)
 
     def classify(self, audio_path, text):
 
@@ -56,16 +56,14 @@ class LanoiceClassification():
         y_chunk_model1_proba = self.loaded_model.predict_proba(x_chunk)
         index = np.argmax(y_chunk_model1_proba)
 
-        '''
-        print("-----<Accuracy>------")
-        for proba in range(0, len(y_chunk_model1_proba[0])):
-            print(self.labels[proba] + " : " + str(y_chunk_model1_proba[0][proba]))
 
-        print('\nEmotion:', self.labels[int(index)])
-        print("--------------------")
-        '''
+        # print("-----<Accuracy>------")
+        # for proba in range(0, len(y_chunk_model1_proba[0])):
+        #     print(self.labels[proba] + " : " + str(y_chunk_model1_proba[0][proba]))
+        #
+        # print('\nEmotion:', self.labels[int(index)])
+        # print("--------------------")
 
-        # enc = tokenizer.encode_plus(text)
         inputs = self.tokenizer(
             text,
             return_tensors='pt',
@@ -107,11 +105,10 @@ class LanoiceClassification():
                 result = label_loss.index(max(label_loss)) + 1
 
         # print(f'Sentiment : {self.labels[result]}')
-        '''
-        print("\n<감정 별 손실 함수 값>")
-        for i in range(0, 6):
-            print(self.labels[i + 1], ":", label_loss[i])
-        '''
+
+        # print("\n<감정 별 손실 함수 값>")
+        # for i in range(0, 6):
+        #     print(self.labels[i + 1], ":", label_loss[i])
 
         if (index == 0):
             total_result = -1

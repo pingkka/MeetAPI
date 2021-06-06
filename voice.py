@@ -15,7 +15,7 @@ audio = voice_model.audioClassification()
 class VoicePost(Resource):
     def post(self):
         try:
-            pcm_file = request.files['file']
+            pcm_file = request.files['audio_file']
             pcm_file.save(secure_filename(pcm_file.filename))
             split = pcm_file.filename.split('.pcm')
             wav_filename = split[0] + '.wav'

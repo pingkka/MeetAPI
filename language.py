@@ -11,7 +11,7 @@ string = text_model.textClassification()
 class LanguagePost(Resource):
     def post(self):
         try:
-            text = request.files['file'].read().decode('utf-8')
+            text = request.files['text_file'].read().decode('utf-8')
             emotion = string.textClassification(text)
             print(text)
             return {'emotion': emotion}
