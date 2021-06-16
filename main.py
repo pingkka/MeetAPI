@@ -25,11 +25,11 @@ class HelloAPI(Resource):
                   + "<br/>" \
                   + "<H3>INFO URL<H3/>" \
                   + "<br/>" \
-                  + "<H4>Get Emotion from Text and Voice: /api/get-emotion</H4>" \
+                  + "<H4>Get Emotion from Text and Voice<br/>/api/get-emotion</H4>" \
                   + "<br/>" \
-                  + "<H4>Get Emotion from Text: /api/get-emotion-from-text</H4>" \
+                  + "<H4>Get Emotion from Text<br/>/api/get-emotion-from-text</H4>" \
                   + "<br/>" \
-                  + "<H4>Get Emotion from Voice: /api/get-emotion-from-voice</H4>" \
+                  + "<H4>Get Emotion from Voice<br/>/api/get-emotion-from-voice</H4>" \
                   + "<br/>" \
                   + "<H5>If you have any questions, please contact lsyaran99@hansung.ac.kr</H5>"
         res = make_response(message)
