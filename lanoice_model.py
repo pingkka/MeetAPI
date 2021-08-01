@@ -1,5 +1,7 @@
 import pickle
 import re
+from timeit import default_timer as timer
+from datetime import timedelta
 
 import librosa
 import numpy as np
@@ -14,7 +16,7 @@ class LanoiceClassification():
         self.labels = ["none", "joy", "annoy", "sad", "disgust", "surprise", "fear"]
 
         # 음성 모델 파일명
-        self.filename ='xgb_model3004.model'
+        self.filename = 'xgb_model3004.model'
         # 음성 모델 불러오기
         self.loaded_model = pickle.load(open(self.filename, 'rb'))
 
@@ -32,6 +34,8 @@ class LanoiceClassification():
     def classify(self, audio_path, text):
 
         ########################### TESTING ###########################
+        print("audio classify speed")
+        start = timer()
         # test_file_path = "5_wav/5f05fb0bb140144dfcff0184.wav"
         X, sr = librosa.load(audio_path, sr=None)
         stft = np.abs(librosa.stft(X))
@@ -54,17 +58,19 @@ class LanoiceClassification():
         # y_chunk_model1 = self.loaded_model.predict(x_chunk)
         y_chunk_model1_proba = self.loaded_model.predict_proba(x_chunk)
         index = np.argmax(y_chunk_model1_proba)
+        end = timer()
+        print(timedelta(seconds=end - start))
 
+        # print("----------------------------")
+        # print(f'Review text : {text}')
+        # print("<Audio Accuracy>")
+        # for proba in range(0, len(y_chunk_model1_proba[0])):
+        #     print(self.labels[proba] + " : " + str(y_chunk_model1_proba[0][proba]))
+        #
+        # print('\nEmotion:', self.labels[int(index)])
 
-        print("----------------------------")
-        print(f'Review text : {text}')
-        print("<Audio Accuracy>")
-        for proba in range(0, len(y_chunk_model1_proba[0])):
-            print(self.labels[proba] + " : " + str(y_chunk_model1_proba[0][proba]))
-
-        print('\nEmotion:', self.labels[int(index)])
-
-
+        print("\ntext classify speed")
+        start = timer()
         inputs = self.tokenizer(
             text,
             return_tensors='pt',
@@ -86,8 +92,7 @@ class LanoiceClassification():
         label_loss_str = str(output).split(",")
 
         label_loss = [float(x.strip().replace(']', '')) for x in label_loss_str[1:7]]
-        print("\n<Text Loss>")
-
+        # print("\n<Text Loss>")
 
         pre_result = int(re.findall("\d+", str(prediction))[0])
 
@@ -95,6 +100,9 @@ class LanoiceClassification():
         result = 0
         if label_loss[pre_result - 1] >= self.senti_loss[pre_result - 1]:
             result = pre_result
+
+        end = timer()
+        print(timedelta(seconds=end - start))
 
         '''
         # 안이 들어간 말로 결과가 나왔을 경우 가장 큰 값을 무시함 or 아예 무감정으로 분류되도록 함
@@ -107,17 +115,13 @@ class LanoiceClassification():
                 result = label_loss.index(max(label_loss)) + 1
         '''
 
-
-
-        for i in range(0, 6):
-            print(self.labels[i + 1], ":", label_loss[i])
-        print(f'Sentiment : {self.labels[result]}')
-
-
-
+        # for i in range(0, 6):
+        #     print(self.labels[i + 1], ":", label_loss[i])
+        # print(f'Sentiment : {self.labels[result]}')
 
         # 결과 합산 (값 기반 계산)
-        if (index == 0 or (result == 0 and pre_result == 4) or (result == 0 and pre_result == 5) or (result == 0 and pre_result == 6)):
+        if (index == 0 or (result == 0 and pre_result == 4) or (result == 0 and pre_result == 5) or (
+                result == 0 and pre_result == 6)):
             total_result = -1
         elif (index == pre_result):
             total_result = index - 1
@@ -126,20 +130,18 @@ class LanoiceClassification():
             text_score = []
             audio_score = []
             total_score = []
-            label_loss[4] = label_loss[4]*0.7
-            label_loss[5] = label_loss[5]*0.7
+            label_loss[4] = label_loss[4] * 0.7
+            label_loss[5] = label_loss[5] * 0.7
             for i in range(0, len(label_loss)):
-
                 text_score.append(label_loss[i] / (sum(label_loss) + 10))
 
                 audio_score.append(y_chunk_model1_proba[0][i + 1] - 0.25)
 
             for i in range(0, len(audio_score)):
                 total_score.append(float(audio_score[i]) + float(text_score[i]))
-            print(total_score)
+            # print(total_score)
 
             total_result = total_score.index(max(total_score))
-
 
         '''
         # 결과 합산 (값 기반 계산)
@@ -201,7 +203,7 @@ class LanoiceClassification():
             total_result = total_score.index(max(total_score))
         '''
 
-        print("Result : " + self.labels[total_result+1])
+        print("Result : " + self.labels[total_result + 1])
         print("---------------------------------")
 
         return self.labels[total_result + 1]

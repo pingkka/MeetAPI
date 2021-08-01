@@ -1,15 +1,17 @@
 # -*- coding:utf-8 -*-
+import datetime
 import os
 import wave
+from datetime import timedelta
+from timeit import default_timer as timer
 
+import pytz
 from flask import request
 from flask_restx import Resource, Namespace
 from werkzeug.utils import secure_filename
 
 import lanoice_model
 import usage_info
-import datetime
-import pytz
 
 global usage_info_list
 
@@ -38,7 +40,11 @@ class LanguageVoicePost(Resource):
             wav_filename = split[0] + '.wav'
             pcm2wav(pcm_file.filename, wav_filename)
 
+            print("emotion classify speed")
+            start = timer()
             emotion = lanoice.classify(wav_filename, text)
+            end = timer()
+            print(timedelta(seconds=end - start))
 
             info.text = text
             info.emotion = emotion

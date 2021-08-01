@@ -1,11 +1,11 @@
 import torch
 import torch.nn as nn
 from torch.nn import CrossEntropyLoss, MSELoss
-from transformers.activations import get_activation
 from transformers import (
     ElectraPreTrainedModel,
     ElectraModel
 )
+from transformers.activations import get_activation
 
 # GPU 사용
 device = torch.device("cpu")

@@ -1,7 +1,9 @@
+import re
+
 import torch
 from transformers import AutoTokenizer
+
 import hw_text_model
-import re
 
 
 class textClassification():
@@ -13,7 +15,7 @@ class textClassification():
         self.tokenizer = AutoTokenizer.from_pretrained("monologg/koelectra-small-v3-discriminator")
         # GPU 사용
         self.device = torch.device("cpu")
-        self.model = hw_text_model.HwangariSentimentModel.from_pretrained("Kyuyoung11/haremotions-v3").to(self.device)
+        self.model = hw_text_model.HwangariSentimentModel.from_pretrained("Kyuyoung11/haremotions-v1").to(self.device)
 
     def textClassification(self, text):
 

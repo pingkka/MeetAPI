@@ -1,7 +1,7 @@
 # -*- coding:utf-8 -*-
 import json
 
-from flask import Flask, jsonify, make_response
+from flask import Flask, make_response
 from flask_restx import Api, Resource
 
 import lanoice
