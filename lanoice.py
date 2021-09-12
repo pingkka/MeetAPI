@@ -40,11 +40,10 @@ class LanguageVoicePost(Resource):
             wav_filename = split[0] + '.wav'
             pcm2wav(pcm_file.filename, wav_filename)
 
-            print("emotion classify speed")
             start = timer()
             emotion = lanoice.classify(wav_filename, text)
             end = timer()
-            print(timedelta(seconds=end - start))
+            print("emotion classify speed\n>>>" + str(timedelta(seconds=end - start)))
 
             info.text = text
             info.emotion = emotion
