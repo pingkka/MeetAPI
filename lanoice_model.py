@@ -29,7 +29,7 @@ class LanoiceClassification():
         # self.audio_model = load_model('audio_model/audio_4_unit25_0.1.h5')
 
         # gender 모델 파일명
-        self.gender_file = 'audio_gender_model/xgb_1_300_0.1_6.model'
+        self.gender_file = 'xgb_1_300_0.1_6.model'
 
         # gender 모델 불러오기
         self.gender_model = pickle.load(open(self.gender_file, 'rb'))
@@ -68,11 +68,11 @@ class LanoiceClassification():
         y_chunk_gender_proba = self.gender_model.predict_proba(x_chunk)
         gender_index = np.argmax(y_chunk_gender_proba)
         if (gender_index == 0):
-            filename = 'audio_model/xgb_5_300_0.1_6_m.model'
+            filename = 'xgb_5_300_0.1_6_m.model'
             # 음성 모델 불러오기
             audio_model =  pickle.load(open(filename, 'rb'))
         elif (gender_index == 1):
-            filename = 'audio_model/xgb_1_300_0.1_6_f.model'
+            filename = 'xgb_1_300_0.1_6_f.model'
             # 음성 모델 불러오기
             audio_model = pickle.load(open(filename, 'rb'))
 
